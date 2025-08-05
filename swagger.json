@@ -1,0 +1,215 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CompanyDB API",
+    "version": "1.0.0",
+    "description": "API для управления сотрудниками компании"
+  },
+  "servers": [
+    {
+      "url": "https://{app-name}.herokuapp.com",
+      "description": "Heroku production server",
+      "variables": {
+        "app-name": {
+          "default": "your-heroku-app-name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/employees": {
+      "get": {
+        "summary": "Получить всех сотрудников",
+        "responses": {
+          "200": {
+            "description": "Успешно получен список сотрудников",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Employee"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Создать нового сотрудника",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Сотрудник успешно создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Employee"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные входные данные",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      }
+    },
+    "/employees/{id}": {
+      "get": {
+        "summary": "Получить сотрудника по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешно получен сотрудник",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Employee"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Сотрудник не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "put": {
+        "summary": "Обновить сотрудника",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Сотрудник успешно обновлен"
+          },
+          "400": {
+            "description": "Некорректные входные данные"
+          },
+          "404": {
+            "description": "Сотрудник не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Удалить сотрудника",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Сотрудник успешно удален"
+          },
+          "404": {
+            "description": "Сотрудник не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "first_name": { "type": "string", "example": "Иван" },
+          "last_name": { "type": "string", "example": "Петров" },
+          "position": { "type": "string", "example": "Разработчик" },
+          "department_id": { "type": "integer", "example": 1 },
+          "car_id": { "type": "integer", "example": 1 }
+        }
+      },
+      "EmployeeInput": {
+        "type": "object",
+        "required": ["first_name", "last_name", "position"],
+        "properties": {
+          "first_name": { "type": "string", "example": "Мария" },
+          "last_name": { "type": "string", "example": "Иванова" },
+          "position": { "type": "string", "example": "Тестировщик" },
+          "department_id": { "type": "integer", "example": 2 },
+          "car_id": { "type": "integer", "example": 3 }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "example": "Error message" }
+        }
+      }
+    }
+  }
+}
